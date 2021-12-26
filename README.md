@@ -528,17 +528,56 @@ Arguments: (string text)
 
 #### SendPacket
 ```lua
--- No Example
+-- sends packet to game
+SendPacket(2, "action|input\n|text|this is a example")
 ```
 
 #### SendPacketRaw
 ```lua
--- No Example
+-- hit Tile
+function hitTile(x, y)
+	if y then
+		local logic = GetGameLogic()
+		local player = logic:GetLocal()
+	
+		packet = GamePacket()
+		packet.type = 3
+		packet.int_data = 18
+		packet.int_x = x
+		packet.int_y = y
+		packet.pos_x = player.pos.x
+		packet.pos_y = player.pos.y
+		SendPacketRaw(packet)
+	end
+end
 ```
 
 #### ProcessVariantList
 ```lua
--- No Example
+-- example 1 - Blocks all dialogs
+function hook(varlist)
+if varlist[0]:find("OnDialogRequest") then
+return true
+end
+end
+
+addHook("ProcessVariantList", "example_hook", hook)
+
+-- example 2 - fast drop
+function hook2(varlist, netid, delay)
+if varlist[0]:find("OnDialogRequest") and varlist[1]:find("end_dialog|drop_item") then
+pkt = string.format([[action|dialog_return
+dialog_name|drop_item
+itemID|%d|
+count|%d
+]], varlist[1]:match("itemID|(%d+)"), varlist[1]:match("count||(%d+)"))
+
+SendPacket(2, pkt)
+return true
+end
+end
+
+AddHook("ProcessVariantList", "fastdrop", hook2)
 ```
 
 #### ProcessTankUpdatePacket
@@ -566,5 +605,26 @@ AddHook("OnTextGameMessage", "reconnect_hook", reconnect_hook)
 
 #### HandleTrackPacket
 ```lua
--- No Example
+-- Blocks all track packets
+function hook(packet)
+return true
+end
+
+addHook("HandleTrackPacket", "example_hook", hook)
+```
+
+#### Render
+```lua
+-- Example Menu
+hack = false
+
+function RenderMenu()
+ImGui.Text("Hello World")
+hack = ImGui.Checkbox("Enable Hack", hack)
+end
+
+AddHook(
+"Render", -- Hook type
+"RenderMenu", -- Hook name
+RenderMenu) -- Hook function
 ```

@@ -561,7 +561,7 @@ return true
 end
 end
 
-addHook("ProcessVariantList", "example_hook", hook)
+AddHook("ProcessVariantList", "example_hook", hook)
 
 -- example 2 - fast drop
 function hook2(varlist, netid, delay)
@@ -610,7 +610,7 @@ function hook(packet)
 return true
 end
 
-addHook("HandleTrackPacket", "example_hook", hook)
+AddHook("HandleTrackPacket", "example_hook", hook)
 ```
 
 #### Render
